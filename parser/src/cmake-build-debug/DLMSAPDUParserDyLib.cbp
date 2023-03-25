@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="DLMSAPDUParserDyLib"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="DLMSAPDUParserDyLib">
+				<Option output="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/libDLMSAPDUParserDyLib.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 DLMSAPDUParserDyLib"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="DLMSAPDUParserDyLib/fast">
+				<Option output="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/libDLMSAPDUParserDyLib.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 DLMSAPDUParserDyLib/fast"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/apdu.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/bitarray.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/bytebuffer.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/ciphering.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/client.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/converters.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/cosem.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/datainfo.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/date.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/dlms.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/dlmsSettings.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxaes.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxarray.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxget.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxinvoke.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxkey.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxmd5.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxobjects.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxserializer.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxset.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxsetignoremalloc.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxsetmalloc.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxsha1.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxsha256.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/gxvalueeventargs.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/helpers.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/message.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/notify.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/objectarray.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/parameters.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/replydata.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/server.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/serverevents.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/development/src/variant.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/base.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/getRequest.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/parser.c">
+			<Option target="DLMSAPDUParserDyLib"/>
+		</Unit>
+		<Unit filename="/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

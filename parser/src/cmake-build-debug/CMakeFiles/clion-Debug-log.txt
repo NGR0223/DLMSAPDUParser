@@ -1,0 +1,4 @@
+C:\WINDOWS\system32\wsl.exe --distribution Ubuntu-22.04 --exec /bin/bash -c "export PATH=\"$PATH:/usr/bin\" && export CMAKE_COLOR_DIAGNOSTICS=ON && export CLION_IDE=TRUE && export JETBRAINS_IDE=TRUE && cd /mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug && /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/usr/bin/gmake -DCMAKE_C_COMPILER=/usr/bin/gcc '-DCMAKE_CXX_COMPILER=/usr/bin/g++' -G 'CodeBlocks - Unix Makefiles' -S /mnt/d/CLionProjects/DLMSAPDUParser/parser/src -B /mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug

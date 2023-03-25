@@ -1,0 +1,3 @@
+/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/CMakeFiles/DLMSAPDUParserDyLib.dir
+/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/d/CLionProjects/DLMSAPDUParser/parser/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
