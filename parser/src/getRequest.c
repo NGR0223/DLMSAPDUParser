@@ -6,12 +6,89 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void free_get_request(COSEM_APDU_GET_REQUEST **ppGetRequest)
+static void free_get_request_normal(COSEM_APDU_GET_REQUEST_NORMAL **ppGetRequestNormal)
 {
+    if (*ppGetRequestNormal == NULL)
+    {
+        return;
+    }
 
+    free((*ppGetRequestNormal)->pCosemAttributeDescriptor);
+    (*ppGetRequestNormal)->pCosemAttributeDescriptor = NULL;
+
+    /*!
+     * @todo free Selective Access Descriptor
+     */
+
+    free(*ppGetRequestNormal);
+    *ppGetRequestNormal = NULL;
 }
 
-COSEM_APDU_GET_REQUEST *handle_get_request(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)
+void free_get_request(COSEM_APDU_GET_REQUEST **ppGetRequest)
+{
+    if (*ppGetRequest == NULL)
+    {
+        return;
+    }
+
+    switch ((*ppGetRequest)->getRequestType)
+    {
+        case 1:
+            free_get_request_normal(&(*ppGetRequest)->pGetRequestNormal);
+            break;
+        default:
+            break;
+    }
+
+    free(*ppGetRequest);
+    *ppGetRequest = NULL;
+}
+
+COSEM_APDU_GET_REQUEST_NORMAL *convert_data_to_get_request_normal(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)
+{
+    COSEM_APDU_GET_REQUEST_NORMAL *pCosemApduGetRequestNormal =
+            (COSEM_APDU_GET_REQUEST_NORMAL *) calloc(1, sizeof(COSEM_APDU_GET_REQUEST_NORMAL));
+
+    // Invoke id and priority
+    bb_getUInt8(pByteBuffer, &pCosemApduGetRequestNormal->invokeIdAndPriority);
+
+    // Cosem attribute descriptor
+    pCosemApduGetRequestNormal->pCosemAttributeDescriptor =
+            (COSEM_ATTRIBUTE_DESCRIPTOR *) calloc(1, sizeof(COSEM_ATTRIBUTE_DESCRIPTOR));
+    uint16_t classID = 0;
+    bb_getUInt16(pByteBuffer, &classID);
+    pCosemApduGetRequestNormal->pCosemAttributeDescriptor->classID = classID;
+    unsigned char ch = 0;
+    for (int i = 0; i < 6; ++i)
+    {
+        bb_getUInt8(pByteBuffer, &ch);
+        pCosemApduGetRequestNormal->pCosemAttributeDescriptor->instanceID[i] = ch;
+    }
+    bb_getInt8(pByteBuffer, &pCosemApduGetRequestNormal->pCosemAttributeDescriptor->attributeID);
+
+    // Selective access descriptor
+    bb_getUInt8(pByteBuffer, &pCosemApduGetRequestNormal->isUseAccessSelector);
+
+    return pCosemApduGetRequestNormal;
+}
+
+COSEM_APDU_GET_REQUEST_NEXT *convert_data_to_get_request_next(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)
+{
+    COSEM_APDU_GET_REQUEST_NEXT *pCosemApduGetRequestNext =
+            (COSEM_APDU_GET_REQUEST_NEXT *) calloc(1, sizeof(COSEM_APDU_GET_REQUEST_NEXT));
+
+    return pCosemApduGetRequestNext;
+}
+
+COSEM_APDU_GET_REQUEST_WITH_LIST *convert_data_to_get_request_with_list(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)
+{
+    COSEM_APDU_GET_REQUEST_WITH_LIST *pCosemApduGetRequestWithList =
+            (COSEM_APDU_GET_REQUEST_WITH_LIST *) calloc(1, sizeof(COSEM_APDU_GET_REQUEST_WITH_LIST));
+
+    return pCosemApduGetRequestWithList;
+}
+
+COSEM_APDU_GET_REQUEST *convert_data_to_get_request(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)
 {
     if (pByteBuffer == NULL || pByteBuffer->size == 0)
     {
@@ -24,11 +101,21 @@ COSEM_APDU_GET_REQUEST *handle_get_request(gxByteBuffer *pByteBuffer, int32_t *p
 
     COSEM_APDU_GET_REQUEST *pGetRequest = (COSEM_APDU_GET_REQUEST *) calloc(1, sizeof(COSEM_APDU_GET_REQUEST));
     // Get request type
-    unsigned char tmpUnChar = 0;
-    bb_getUInt8(pByteBuffer, &tmpUnChar);
-    if (tmpUnChar > 3 || tmpUnChar == 0)
+    unsigned char getRequestType = 0;
+    bb_getUInt8(pByteBuffer, &getRequestType);
+    if (getRequestType == 1)
     {
-        pGetRequest->getRequestType = (DLMS_GET_COMMAND_TYPE) tmpUnChar;
+        pGetRequest->getRequestType = (DLMS_GET_COMMAND_TYPE) getRequestType;
+        pGetRequest->pGetRequestNormal = convert_data_to_get_request_normal(pByteBuffer, pErrorCode);
+    }
+    else if (getRequestType == 2)
+    {
+        pGetRequest->getRequestType = (DLMS_GET_COMMAND_TYPE) getRequestType;
+        pGetRequest->pGetRequestNext = convert_data_to_get_request_next(pByteBuffer, pErrorCode);
+    }
+    else if (getRequestType == 3)
+    {
+        pGetRequest->getRequestType = (DLMS_GET_COMMAND_TYPE) getRequestType;
     }
     else
     {
@@ -45,4 +132,86 @@ COSEM_APDU_GET_REQUEST *handle_get_request(gxByteBuffer *pByteBuffer, int32_t *p
         *pErrorCode = DLMS_ERROR_CODE_OK;
     }
     return pGetRequest;
+}
+
+unsigned char *convert_get_request_normal_to_data(COSEM_APDU_GET_REQUEST_NORMAL *pCosemApduGetRequestNormal,
+                                                  int32_t *pLengthData, int32_t *pErrorCode)
+{
+    if (pCosemApduGetRequestNormal == NULL || pLengthData == NULL)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
+        return NULL;
+    }
+    gxByteBuffer byteBuffer;
+    bb_init(&byteBuffer);
+
+    // Add invoke id and priority
+    bb_setUInt8(&byteBuffer, pCosemApduGetRequestNormal->invokeIdAndPriority);
+
+    // Add cosem attribute descriptor
+    bb_setUInt16(&byteBuffer, pCosemApduGetRequestNormal->pCosemAttributeDescriptor->classID);
+    for (int i = 0; i < 6; ++i)
+    {
+        bb_setUInt8(&byteBuffer, pCosemApduGetRequestNormal->pCosemAttributeDescriptor->instanceID[i]);
+    }
+    bb_setInt8(&byteBuffer, pCosemApduGetRequestNormal->pCosemAttributeDescriptor->attributeID);
+
+    // Add selective access descriptor
+    bb_setUInt8(&byteBuffer, pCosemApduGetRequestNormal->isUseAccessSelector);
+
+    // convert to pointer of unsigned char
+    *pLengthData = (int32_t) byteBuffer.size;
+    unsigned char *pData = (unsigned char *) calloc(*pLengthData, sizeof(unsigned char));
+    bb_get(&byteBuffer, pData, byteBuffer.size);
+
+    bb_clear(&byteBuffer);
+
+    return pData;
+}
+
+unsigned char *convert_get_request_to_data(COSEM_APDU_GET_REQUEST *pCosemApduGetRequest,
+                                           int32_t *pLengthData, int32_t *pErrorCode)
+{
+    if (pCosemApduGetRequest == NULL || pLengthData == NULL)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
+        return NULL;
+    }
+
+    gxByteBuffer byteBuffer;
+    bb_init(&byteBuffer);
+
+    // Add get request type
+    bb_setUInt8(&byteBuffer, pCosemApduGetRequest->getRequestType);
+
+    // Add pdu
+    int32_t lengthPdu = 0;
+    unsigned char *pdu = convert_get_request_normal_to_data(pCosemApduGetRequest->pGetRequestNormal, &lengthPdu,
+                                                            pErrorCode);
+    if (pdu == NULL)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_FALSE;
+        }
+        return NULL;
+    }
+    bb_set(&byteBuffer, pdu, lengthPdu);
+    free(pdu);
+    pdu = NULL;
+
+    // convert to pointer of unsigned char
+    *pLengthData = (int32_t) byteBuffer.size;
+    unsigned char *pData = (unsigned char *) calloc(*pLengthData, sizeof(unsigned char));
+    bb_get(&byteBuffer, pData, byteBuffer.size);
+
+    bb_clear(&byteBuffer);
+
+    return pData;
 }

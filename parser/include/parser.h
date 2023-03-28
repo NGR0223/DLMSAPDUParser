@@ -6,19 +6,25 @@
 #define DLMSAPDUPARSER_PARSER_H
 
 #include "getRequest.h"
+#include "setRequest.h"
 
 typedef union
 {
     COSEM_APDU_GET_REQUEST *pGetRequest;
+    COSEM_APDU_SET_REQUEST *pSetRequest;
 } COSEM_APDU;
 
 typedef struct
 {
-    uint16_t APDULength;
-    DLMS_COMMAND APDUType;
-    COSEM_APDU *pCosemAPDU;
+    uint16_t apduLength;
+    DLMS_COMMAND apduType;
+    COSEM_APDU *pCosemApdu;
 } xDLMS_APDU;
 
-xDLMS_APDU *convert_data_to_DLMS_APDU(unsigned char *data, int32_t lengthData, int32_t *pErrorCode);
+xDLMS_APDU *convert_data_to_xDLMS_APDU(unsigned char *data, int32_t lengthData, int32_t *pErrorCode);
+
+unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *xDlmsApdu, int32_t *pLengthData, int32_t *pErrorCode);
+
+void free_xDLMS_APDU(xDLMS_APDU **ppXDlmsApdu);
 
 #endif //DLMSAPDUPARSER_PARSER_H
