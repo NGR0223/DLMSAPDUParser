@@ -42,11 +42,14 @@ typedef struct
     };
 } COSEM_APDU_GET_REQUEST;
 
+void free_get_request(COSEM_APDU_GET_REQUEST **ppGetRequest);
+
 COSEM_APDU_GET_REQUEST *convert_data_to_get_request(gxByteBuffer *pByteBuffer, int32_t *pErrorCode);
 
-unsigned char *
-convert_get_request_to_data(COSEM_APDU_GET_REQUEST *pCosemApduGetRequest, int32_t *pLengthData, int32_t *pErrorCode);
+unsigned char *convert_get_request_to_data(COSEM_APDU_GET_REQUEST *pCosemApduGetRequest,
+                                           int32_t *pLengthData, int32_t *pErrorCode);
 
-void free_get_request(COSEM_APDU_GET_REQUEST **ppGetRequest);
+void mutate_get_request(COSEM_APDU_GET_REQUEST *pCosemApduGetRequest,
+                        MUTATE_POSITION mutatePosition, int32_t *pErrorCode);
 
 #endif //DLMSAPDUPARSER_GETREQUEST_H

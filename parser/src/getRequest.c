@@ -215,3 +215,47 @@ unsigned char *convert_get_request_to_data(COSEM_APDU_GET_REQUEST *pCosemApduGet
 
     return pData;
 }
+
+void mutate_get_request(COSEM_APDU_GET_REQUEST *pCosemApduGetRequest,
+                        MUTATE_POSITION mutatePosition, int32_t *pErrorCode)
+{
+    if (pCosemApduGetRequest == NULL)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
+    }
+
+    srandom((unsigned int) time(NULL));
+    if (mutatePosition == MUTATE_POSITION_GET_INVOKE_ID_AND_PRIORITY)
+    {
+        unsigned char newInvokeIDAndPriority = random() % (0xFF + 1);
+        pCosemApduGetRequest->pGetRequestNormal->invokeIdAndPriority = newInvokeIDAndPriority;
+    }
+    else if (mutatePosition == MUTATE_POSITION_GET_ATTRIBUTE_CLASS_ID)
+    {
+        uint16_t newClassID = random() % (0xFFFF + 1);
+        pCosemApduGetRequest->pGetRequestNormal->pCosemAttributeDescriptor->classID = newClassID;
+    }
+    else if (mutatePosition == MUTATE_POSITION_GET_ATTRIBUTE_INSTANCE_ID)
+    {
+        for (int i = 0; i < 6; ++i)
+        {
+            unsigned char ch = random() % (0xFF + 1);
+            pCosemApduGetRequest->pGetRequestNormal->pCosemAttributeDescriptor->instanceID[i] = ch;
+        }
+    }
+    else if (mutatePosition == MUTATE_POSITION_GET_ATTRIBUTE_ATTRIBUTE_ID)
+    {
+        char newAttributeID = (char) (random() % (0xFF + 1));
+        pCosemApduGetRequest->pGetRequestNormal->pCosemAttributeDescriptor->attributeID = newAttributeID;
+    }
+    else
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_FALSE;
+        }
+    }
+}

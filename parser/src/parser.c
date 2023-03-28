@@ -144,3 +144,31 @@ unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *xDlmsApdu, int32_t *pLengt
 
     return data;
 }
+
+void mutate_xDLMS_APDU(xDLMS_APDU *xDlmsApdu, MUTATE_POSITION mutatePosition, int32_t *pErrorCode)
+{
+    if (xDlmsApdu == NULL)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
+        return;
+    }
+
+    switch (mutatePosition)
+    {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            mutate_get_request(xDlmsApdu->pCosemApdu->pGetRequest, mutatePosition, pErrorCode);
+            break;
+        default:
+            if (pErrorCode != NULL)
+            {
+                *pErrorCode = DLMS_ERROR_CODE_FALSE;
+            }
+            break;
+    }
+}
