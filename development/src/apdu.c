@@ -1323,7 +1323,7 @@ int apdu_parsePDU(
                 ret = DLMS_ERROR_CODE_INVALID_TAG;
                 break;
             }
-            // Choice for pResult.
+            // Choice for result.
             if ((ret = bb_getUInt8(buff, &tag)) != 0)
             {
 #ifdef DLMS_DEBUG
@@ -1482,7 +1482,7 @@ int apdu_parsePDU(
                     ret = DLMS_ERROR_CODE_INVALID_TAG;
                     break;
                 }
-                // Choice for pResult (Universal, Octet string type)
+                // Choice for result (Universal, Octet string type)
                 if ((ret = bb_getUInt8(buff, &tag)) != 0)
                 {
                     break;
@@ -1807,14 +1807,14 @@ int apdu_parsePDU(
             break;
             // 0xBE
         case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_USER_INFORMATION:
-            //Check pResult component. Some meters are returning invalid user-information if connection failed.
+            //Check result component. Some meters are returning invalid user-information if connection failed.
             if (*result != DLMS_ASSOCIATION_RESULT_ACCEPTED
                 && *diagnostic != DLMS_SOURCE_DIAGNOSTIC_NONE)
             {
                 if ((ret = apdu_handleResultComponent(*diagnostic)) != 0)
                 {
 #ifdef DLMS_DEBUG
-                    svr_notifyTrace(GET_STR_FROM_EEPROM("Invalid pResult component. "), ret);
+                    svr_notifyTrace(GET_STR_FROM_EEPROM("Invalid result component. "), ret);
 #endif //DLMS_DEBUG
                 }
                 return ret;
@@ -1873,7 +1873,7 @@ int apdu_parsePDU(
     {
 #ifndef DLMS_IGNORE_SERVER
         if (settings->server && afu != 0 && 
-            *pResult == DLMS_ASSOCIATION_RESULT_ACCEPTED &&
+            *result == DLMS_ASSOCIATION_RESULT_ACCEPTED &&
             !(
                 afu == DLMS_AFU_MISSING_CALLING_AUTHENTICATION_VALUE &&
                 settings->authentication == DLMS_AUTHENTICATION_NONE))
@@ -1894,13 +1894,13 @@ int apdu_parsePDU(
                 break;
             }
 #endif //DLMS_DEBUG
-            * pResult = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
+            * result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
             *diagnostic = DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_FAILURE;
             return 0;
         }
 #endif //DLMS_IGNORE_SERVER
         //All meters don't send user-information if connection is failed.
-        //For this reason pResult component is check again.
+        //For this reason result component is check again.
         if ((ret = apdu_handleResultComponent(*diagnostic)) != 0)
         {
 #ifdef DLMS_DEBUG
@@ -1925,7 +1925,7 @@ int apdu_parsePDU(
 int apdu_generateAARE(
     dlmsSettings* settings,
     gxByteBuffer* data,
-    DLMS_ASSOCIATION_RESULT pResult,
+    DLMS_ASSOCIATION_RESULT result,
     unsigned char diagnostic,
     gxByteBuffer* errorData,
     gxByteBuffer* encryptedData,
@@ -1950,10 +1950,10 @@ int apdu_generateAARE(
     bb_setUInt8(data, 3); // len
     // Tag
     bb_setUInt8(data, BER_TYPE_INTEGER);
-    // Choice for pResult (INTEGER, universal)
+    // Choice for result (INTEGER, universal)
     bb_setUInt8(data, 1); // Len
     // ResultValue
-    bb_setUInt8(data, pResult);
+    bb_setUInt8(data, result);
     // SourceDiagnostic
     bb_setUInt8(data, 0xA3);
     // len
@@ -1970,7 +1970,7 @@ int apdu_generateAARE(
     }
     bb_setUInt8(data, 3); // len
     bb_setUInt8(data, 2); // Tag
-    // Choice for pResult (INTEGER, universal)
+    // Choice for result (INTEGER, universal)
     bb_setUInt8(data, 1); // Len
     // diagnostic
     bb_setUInt8(data, diagnostic);
@@ -2037,7 +2037,7 @@ int apdu_generateAARE(
         }
     }
 #ifndef DLMS_IGNORE_HIGH_GMAC
-    if (pResult == DLMS_ASSOCIATION_RESULT_ACCEPTED || !isCiphered(&settings->cipher))
+    if (result == DLMS_ASSOCIATION_RESULT_ACCEPTED || !isCiphered(&settings->cipher))
 #endif //DLMS_IGNORE_HIGH_GMAC
     {
         gxByteBuffer tmp;

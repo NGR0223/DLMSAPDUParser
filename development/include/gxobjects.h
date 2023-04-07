@@ -180,7 +180,7 @@ extern "C" {
         // Line dedicated to the device.
         DLMS_AUTO_ANSWER_MODE_DEVICE = 0,
         // Shared line management with a limited number of calls allowed. Once the number of calls is reached,
-        // the window status becomes inactive until the next start date, whatever the pResult of the call,
+        // the window status becomes inactive until the next start date, whatever the result of the call,
         DLMS_AUTO_ANSWER_MODE_CALL = 1,
         // Shared line management with a limited number of successful calls allowed. Once the number of
         //// successful communications is reached, the window status becomes inactive until the next start date,
