@@ -2751,16 +2751,16 @@ extern "C" {
     //  http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMSTokenGateway
     typedef enum
     {
-        // Token format result OK.
+        // Token format pResult OK.
         FORMAT_OK,
 
-        // Authentication result OK.
+        // Authentication pResult OK.
         AUTHENTICATION_OK,
 
-        // Validation result OK.
+        // Validation pResult OK.
         VALIDATION_OK,
 
-        // Token execution result OK.
+        // Token execution pResult OK.
         TOKEN_EXECUTION_OK,
 
         // Token format failure.
@@ -2769,10 +2769,10 @@ extern "C" {
         // Authentication failure.
         DLMS_TOKEN_STATUS_CODE_AUTHENTICATION_FAILURE,
 
-        // Validation result failure.
+        // Validation pResult failure.
         DLMS_TOKEN_STATUS_CODE_VALIDATION_RESULT_FAILURE,
 
-        // Token execution result failure.
+        // Token execution pResult failure.
         DLMS_TOKEN_STATUS_CODE_TOKEN_EXECUTION_RESULT_FAILURE,
 
         // Token received and not yet processed.

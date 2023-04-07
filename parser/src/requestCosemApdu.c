@@ -2,7 +2,7 @@
 // Created by 720 on 2023/3/25.
 //
 
-#include "../include/getRequest.h"
+#include "../include/requestCosemApdu.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,7 +31,7 @@ void free_get_request(COSEM_APDU_GET_REQUEST **ppGetRequest)
         return;
     }
 
-    switch ((*ppGetRequest)->getRequestType)
+    switch ((*ppGetRequest)->dlmsGetCommandType)
     {
         case 1:
             free_get_request_normal(&(*ppGetRequest)->pGetRequestNormal);
@@ -105,17 +105,17 @@ COSEM_APDU_GET_REQUEST *convert_data_to_get_request(gxByteBuffer *pByteBuffer, i
     bb_getUInt8(pByteBuffer, &getRequestType);
     if (getRequestType == 1)
     {
-        pGetRequest->getRequestType = (DLMS_GET_COMMAND_TYPE) getRequestType;
+        pGetRequest->dlmsGetCommandType = (DLMS_GET_COMMAND_TYPE) getRequestType;
         pGetRequest->pGetRequestNormal = convert_data_to_get_request_normal(pByteBuffer, pErrorCode);
     }
     else if (getRequestType == 2)
     {
-        pGetRequest->getRequestType = (DLMS_GET_COMMAND_TYPE) getRequestType;
+        pGetRequest->dlmsGetCommandType = (DLMS_GET_COMMAND_TYPE) getRequestType;
         pGetRequest->pGetRequestNext = convert_data_to_get_request_next(pByteBuffer, pErrorCode);
     }
     else if (getRequestType == 3)
     {
-        pGetRequest->getRequestType = (DLMS_GET_COMMAND_TYPE) getRequestType;
+        pGetRequest->dlmsGetCommandType = (DLMS_GET_COMMAND_TYPE) getRequestType;
     }
     else
     {
@@ -168,7 +168,6 @@ unsigned char *convert_get_request_normal_to_data(COSEM_APDU_GET_REQUEST_NORMAL 
     bb_get(&byteBuffer, pData, byteBuffer.size);
 
     bb_clear(&byteBuffer);
-
     return pData;
 }
 
@@ -188,23 +187,24 @@ unsigned char *convert_get_request_to_data(COSEM_APDU_GET_REQUEST *pCosemApduGet
     bb_init(&byteBuffer);
 
     // Add get request type
-    bb_setUInt8(&byteBuffer, pCosemApduGetRequest->getRequestType);
+    bb_setUInt8(&byteBuffer, pCosemApduGetRequest->dlmsGetCommandType);
 
-    // Add pdu
+    // Add pPdu
     int32_t lengthPdu = 0;
-    unsigned char *pdu = convert_get_request_normal_to_data(pCosemApduGetRequest->pGetRequestNormal, &lengthPdu,
-                                                            pErrorCode);
-    if (pdu == NULL)
+    unsigned char *pPdu = convert_get_request_normal_to_data(pCosemApduGetRequest->pGetRequestNormal, &lengthPdu,
+                                                             pErrorCode);
+    if (pPdu == NULL)
     {
         if (pErrorCode != NULL)
         {
             *pErrorCode = DLMS_ERROR_CODE_FALSE;
         }
+        bb_clear(&byteBuffer);
         return NULL;
     }
-    bb_set(&byteBuffer, pdu, lengthPdu);
-    free(pdu);
-    pdu = NULL;
+    bb_set(&byteBuffer, pPdu, lengthPdu);
+    free(pPdu);
+    pPdu = NULL;
 
     // convert to pointer of unsigned char
     *pLengthData = (int32_t) byteBuffer.size;
@@ -212,7 +212,6 @@ unsigned char *convert_get_request_to_data(COSEM_APDU_GET_REQUEST *pCosemApduGet
     bb_get(&byteBuffer, pData, byteBuffer.size);
 
     bb_clear(&byteBuffer);
-
     return pData;
 }
 
@@ -258,4 +257,47 @@ void mutate_get_request(COSEM_APDU_GET_REQUEST *pCosemApduGetRequest,
             *pErrorCode = DLMS_ERROR_CODE_FALSE;
         }
     }
+}
+
+COSEM_APDU_SET_REQUEST *handle_set_request(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)
+{
+    if (pByteBuffer == NULL || pByteBuffer->size == 0)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
+        return NULL;
+    }
+
+    COSEM_APDU_SET_REQUEST *pSETRequest = (COSEM_APDU_SET_REQUEST *) calloc(1, sizeof(COSEM_APDU_SET_REQUEST));
+
+    // SET request type
+    unsigned char setRequestType = 0;
+    if (setRequestType == 1)
+    {
+        pSETRequest->setRequestType = (DLMS_SET_COMMAND_TYPE) setRequestType;
+    }
+    else if (setRequestType == 2)
+    {
+        pSETRequest->setRequestType = (DLMS_SET_COMMAND_TYPE) setRequestType;
+    }
+    else if (setRequestType == 3)
+    {
+        pSETRequest->setRequestType = (DLMS_SET_COMMAND_TYPE) setRequestType;
+    }
+    else
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_FALSE;
+        }
+        return NULL;
+    }
+
+    if (pErrorCode != NULL)
+    {
+        *pErrorCode = DLMS_ERROR_CODE_OK;
+    }
+    return pSETRequest;
 }

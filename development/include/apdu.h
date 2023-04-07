@@ -65,7 +65,7 @@ extern "C" {
     int apdu_generateAARE(
         dlmsSettings* settings,
         gxByteBuffer* data,
-        DLMS_ASSOCIATION_RESULT result,
+        DLMS_ASSOCIATION_RESULT pResult,
         unsigned char diagnostic,
         gxByteBuffer* errorData,
         gxByteBuffer* encryptedData,

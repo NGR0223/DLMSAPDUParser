@@ -94,17 +94,38 @@ xDLMS_APDU *convert_data_to_xDLMS_APDU(unsigned char *data, int32_t lengthData, 
     xDlmsApdu->apduType = (DLMS_COMMAND) commandType;
 
     // APDU
-    COSEM_APDU_GET_REQUEST *cosemApduGetRequest = convert_data_to_get_request(&byteBuffer, NULL);
     xDlmsApdu->pCosemApdu = (COSEM_APDU *) calloc(1, sizeof(COSEM_APDU));
-    xDlmsApdu->pCosemApdu->pGetRequest = cosemApduGetRequest;
-
+    switch (commandType)
+    {
+        case DLMS_COMMAND_GET_REQUEST:
+        {
+            COSEM_APDU_GET_REQUEST *pCosemApduGetRequest = convert_data_to_get_request(&byteBuffer, NULL);
+            xDlmsApdu->pCosemApdu->pGetRequest = pCosemApduGetRequest;
+            break;
+        }
+        case DLMS_COMMAND_GET_RESPONSE:
+        {
+            COSEM_APDU_GET_RESPONSE *pCosemApduGetResponse = convert_data_to_get_response(&byteBuffer, NULL);
+            xDlmsApdu->pCosemApdu->pGetResponse = pCosemApduGetResponse;
+            break;
+        }
+        default:
+        {
+            if (pErrorCode != NULL)
+            {
+                *pErrorCode = DLMS_ERROR_CODE_UNKNOWN;
+            }
+            free_xDLMS_APDU(&xDlmsApdu);
+            break;
+        }
+    }
     return xDlmsApdu;
 }
 
 
-unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *xDlmsApdu, int32_t *pLengthData, int32_t *pErrorCode)
+unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *pXDlmsApdu, int32_t *pLengthData, int32_t *pErrorCode)
 {
-    if (xDlmsApdu == NULL || pLengthData == NULL)
+    if (pXDlmsApdu == NULL || pLengthData == NULL)
     {
         if (pErrorCode != NULL)
         {
@@ -116,19 +137,25 @@ unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *xDlmsApdu, int32_t *pLengt
     gxByteBuffer byteBuffer;
     bb_init(&byteBuffer);
     // Add length
-    bb_setUInt16(&byteBuffer, xDlmsApdu->apduLength);
+    bb_setUInt16(&byteBuffer, pXDlmsApdu->apduLength);
 
     // Add command type
-    bb_setUInt8(&byteBuffer, xDlmsApdu->apduType);
+    bb_setUInt8(&byteBuffer, pXDlmsApdu->apduType);
 
     // Add cosem apdu
     int32_t lengthPdu = 0;
     unsigned char *pdu = NULL;
-    switch (xDlmsApdu->apduType)
+    switch (pXDlmsApdu->apduType)
     {
-        case 192:
-            pdu = convert_get_request_to_data(xDlmsApdu->pCosemApdu->pGetRequest, &lengthPdu, pErrorCode);
+        case DLMS_COMMAND_GET_REQUEST:
+            pdu = convert_get_request_to_data(pXDlmsApdu->pCosemApdu->pGetRequest, &lengthPdu, pErrorCode);
             break;
+        case DLMS_COMMAND_SET_REQUEST:
+            break;
+        case DLMS_COMMAND_METHOD_REQUEST:
+            break;
+        case DLMS_COMMAND_GET_RESPONSE:
+            pdu = convert_get_response_to_data(pXDlmsApdu->pCosemApdu->pGetResponse, &lengthPdu, pErrorCode);
         default:
             break;
     }
@@ -136,7 +163,7 @@ unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *xDlmsApdu, int32_t *pLengt
     free(pdu);
     pdu = NULL;
 
-    *pLengthData = xDlmsApdu->apduLength + 2;
+    *pLengthData = pXDlmsApdu->apduLength + 2;
     unsigned char *data = (unsigned char *) calloc(*pLengthData, sizeof(unsigned char));
     bb_get(&byteBuffer, data, byteBuffer.size);
 
@@ -145,9 +172,9 @@ unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *xDlmsApdu, int32_t *pLengt
     return data;
 }
 
-void mutate_xDLMS_APDU(xDLMS_APDU *xDlmsApdu, MUTATE_POSITION mutatePosition, int32_t *pErrorCode)
+void mutate_xDLMS_APDU(xDLMS_APDU *pXDlmsApdu, MUTATE_POSITION mutatePosition, int32_t *pErrorCode)
 {
-    if (xDlmsApdu == NULL)
+    if (pXDlmsApdu == NULL)
     {
         if (pErrorCode != NULL)
         {
@@ -162,7 +189,7 @@ void mutate_xDLMS_APDU(xDLMS_APDU *xDlmsApdu, MUTATE_POSITION mutatePosition, in
         case 1:
         case 2:
         case 3:
-            mutate_get_request(xDlmsApdu->pCosemApdu->pGetRequest, mutatePosition, pErrorCode);
+            mutate_get_request(pXDlmsApdu->pCosemApdu->pGetRequest, mutatePosition, pErrorCode);
             break;
         default:
             if (pErrorCode != NULL)

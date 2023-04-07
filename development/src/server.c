@@ -391,7 +391,7 @@ int svr_HandleAarqRequest(
     unsigned char ERROR_BUFF[4];
     gxByteBuffer error;
     BB_ATTACH(error, ERROR_BUFF, 0);
-    DLMS_ASSOCIATION_RESULT result;
+    DLMS_ASSOCIATION_RESULT pResult;
     unsigned char diagnostic;
     // Reset settings for wrapper and PDU.
     if (settings->base.interfaceType == DLMS_INTERFACE_TYPE_WRAPPER ||
@@ -412,7 +412,7 @@ int svr_HandleAarqRequest(
         return DLMS_ERROR_CODE_REJECTED;
     }
 #endif //DLMS_IGNORE_HDLC
-    ret = apdu_parsePDU(&settings->base, data, &result, &diagnostic, &command);
+    ret = apdu_parsePDU(&settings->base, data, &pResult, &diagnostic, &command);
 #ifdef DLMS_DEBUG
     svr_notifyTrace("parsePDU", ret);
 #endif //DLMS_DEBUG
@@ -427,14 +427,14 @@ int svr_HandleAarqRequest(
             ret,
             data);
     }
-    else if (ret == 0 && result == DLMS_ASSOCIATION_RESULT_ACCEPTED)
+    else if (ret == 0 && pResult == DLMS_ASSOCIATION_RESULT_ACCEPTED)
     {
         if (settings->base.dlmsVersionNumber < 6)
         {
 #ifdef DLMS_DEBUG
             svr_notifyTrace("Invalid DLMS version number.", DLMS_INITIATE_DLMS_VERSION_TOO_LOW);
 #endif //DLMS_DEBUG
-            result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
+            pResult = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
             diagnostic = DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN;
             bb_setUInt8(&error, 0xE);
             bb_setUInt8(&error, DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR);
@@ -447,7 +447,7 @@ int svr_HandleAarqRequest(
 #ifdef DLMS_DEBUG
             svr_notifyTrace("Max PDU size is too short.", DLMS_INITIATE_PDU_SIZE_TOOSHORT);
 #endif //DLMS_DEBUG
-            result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
+            pResult = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
             diagnostic = DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN;
             bb_setUInt8(&error, 0xE);
             bb_setUInt8(&error, DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR);
@@ -460,7 +460,7 @@ int svr_HandleAarqRequest(
 #ifdef DLMS_DEBUG
             svr_notifyTrace("Invalid negotiated conformance.", DLMS_INITIATE_INCOMPATIBLE_CONFORMANCE);
 #endif //DLMS_DEBUG
-            result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
+            pResult = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
             diagnostic = DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN;
             bb_setUInt8(&error, 0xE);
             bb_setUInt8(&error, DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR);
@@ -472,7 +472,7 @@ int svr_HandleAarqRequest(
 #ifdef DLMS_DEBUG
             svr_notifyTrace("Connection rejected.", -1);
 #endif //DLMS_DEBUG
-            result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
+            pResult = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
             diagnostic = DLMS_SOURCE_DIAGNOSTIC_APPLICATION_CONTEXT_NAME_NOT_SUPPORTED;
         }
         else
@@ -490,7 +490,7 @@ int svr_HandleAarqRequest(
                 svr_notifyTrace("Connection rejected.", -1);
 #endif //DLMS_DEBUG
                 svr_invalidConnection(settings);
-                result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
+                pResult = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
             }
             else if (settings->base.authentication > DLMS_AUTHENTICATION_LOW)
             {
@@ -498,7 +498,7 @@ int svr_HandleAarqRequest(
                 svr_notifyTrace("High authentication is used.", 0);
 #endif //DLMS_DEBUG
                 // If High authentication is used.
-                result = DLMS_ASSOCIATION_RESULT_ACCEPTED;
+                pResult = DLMS_ASSOCIATION_RESULT_ACCEPTED;
                 diagnostic = DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_REQUIRED;
             }
         }
@@ -559,7 +559,7 @@ int svr_HandleAarqRequest(
 #endif //DLMS_IGNORE_ASSOCIATION_LOGICAL_NAME
             }
         }
-        else if (result == DLMS_ASSOCIATION_RESULT_ACCEPTED)
+        else if (pResult == DLMS_ASSOCIATION_RESULT_ACCEPTED)
         {
             if (settings->base.useLogicalNameReferencing)
             {
@@ -603,7 +603,7 @@ int svr_HandleAarqRequest(
 #ifdef DLMS_DEBUG
         svr_notifyTrace("Permanent rejected.", -1);
 #endif //DLMS_DEBUG
-        result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
+        pResult = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
         diagnostic = DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN;
         bb_setUInt8(&error, 0xE);
         bb_setUInt8(&error, DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR);
@@ -617,7 +617,7 @@ int svr_HandleAarqRequest(
         dlms_addLLCBytes(&settings->base, data);
     }
 #endif //DLMS_IGNORE_HDLC
-    ret = apdu_generateAARE(&settings->base, data, result, diagnostic, &error, NULL, command);
+    ret = apdu_generateAARE(&settings->base, data, pResult, diagnostic, &error, NULL, command);
 #ifdef DLMS_DEBUG
     svr_notifyTrace("apdu_generateAARE.", ret);
 #endif //DLMS_DEBUG
