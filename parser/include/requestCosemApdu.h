@@ -42,7 +42,7 @@ typedef struct
     };
 } COSEM_APDU_GET_REQUEST;
 
-void free_get_request(COSEM_APDU_GET_REQUEST **ppGetRequest);
+void free_get_request(COSEM_APDU_GET_REQUEST **ppCosemApduGetRequest);
 
 COSEM_APDU_GET_REQUEST *convert_data_to_get_request(gxByteBuffer *pByteBuffer, int32_t *pErrorCode);
 

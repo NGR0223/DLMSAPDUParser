@@ -49,21 +49,29 @@ void test()
     unsigned char *pData = convert_xDLMS_APDU_to_data(pXDlmsApdu, &lengthData, NULL);
     printf("Mutate 0 Data:");
     print_hex_data(pData, 15);
+    free(pData);
+    pData = NULL;
 
     mutate_xDLMS_APDU(pXDlmsApdu, 1, NULL);
     pData = convert_xDLMS_APDU_to_data(pXDlmsApdu, &lengthData, NULL);
     printf("Mutate 1 Data:");
     print_hex_data(pData, 15);
+    free(pData);
+    pData = NULL;
 
     mutate_xDLMS_APDU(pXDlmsApdu, 2, NULL);
     pData = convert_xDLMS_APDU_to_data(pXDlmsApdu, &lengthData, NULL);
     printf("Mutate 2 Data:");
     print_hex_data(pData, 15);
+    free(pData);
+    pData = NULL;
 
     mutate_xDLMS_APDU(pXDlmsApdu, 3, NULL);
     pData = convert_xDLMS_APDU_to_data(pXDlmsApdu, &lengthData, NULL);
     printf("Mutate 3 Data:");
     print_hex_data(pData, 15);
+    free(pData);
+    pData = NULL;
 
     free_xDLMS_APDU(&pXDlmsApdu);
 }
@@ -77,5 +85,7 @@ int main()
     unsigned char *pData = convert_xDLMS_APDU_to_data(pXDlmsApdu, &lengthData, NULL);
 
     free_xDLMS_APDU(&pXDlmsApdu);
+    free(pData);
+    pData = NULL;
     return 0;
 }

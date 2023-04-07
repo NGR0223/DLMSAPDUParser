@@ -6,42 +6,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void free_get_request_normal(COSEM_APDU_GET_REQUEST_NORMAL **ppGetRequestNormal)
+static void free_get_request_normal(COSEM_APDU_GET_REQUEST_NORMAL **ppCosemApduGetRequestNormal)
 {
-    if (*ppGetRequestNormal == NULL)
+    if (*ppCosemApduGetRequestNormal != NULL)
     {
-        return;
+        if ((*ppCosemApduGetRequestNormal)->pCosemAttributeDescriptor != NULL)
+        {
+            free((*ppCosemApduGetRequestNormal)->pCosemAttributeDescriptor);
+            (*ppCosemApduGetRequestNormal)->pCosemAttributeDescriptor = NULL;
+        }
+
+        /*!
+         * @todo free Selective Access Descriptor
+         */
+
+        free(*ppCosemApduGetRequestNormal);
+        *ppCosemApduGetRequestNormal = NULL;
     }
-
-    free((*ppGetRequestNormal)->pCosemAttributeDescriptor);
-    (*ppGetRequestNormal)->pCosemAttributeDescriptor = NULL;
-
-    /*!
-     * @todo free Selective Access Descriptor
-     */
-
-    free(*ppGetRequestNormal);
-    *ppGetRequestNormal = NULL;
 }
 
-void free_get_request(COSEM_APDU_GET_REQUEST **ppGetRequest)
+void free_get_request(COSEM_APDU_GET_REQUEST **ppCosemApduGetRequest)
 {
-    if (*ppGetRequest == NULL)
+    if (*ppCosemApduGetRequest != NULL)
     {
-        return;
-    }
+        switch ((*ppCosemApduGetRequest)->dlmsGetCommandType)
+        {
+            case DLMS_GET_COMMAND_TYPE_NORMAL:
+                if ((*ppCosemApduGetRequest)->pGetRequestNormal!=NULL)
+                {
+                    free_get_request_normal(&(*ppCosemApduGetRequest)->pGetRequestNormal);
+                    break;
+                }
+            default:
+                break;
+        }
 
-    switch ((*ppGetRequest)->dlmsGetCommandType)
-    {
-        case 1:
-            free_get_request_normal(&(*ppGetRequest)->pGetRequestNormal);
-            break;
-        default:
-            break;
+        free(*ppCosemApduGetRequest);
+        *ppCosemApduGetRequest = NULL;
     }
-
-    free(*ppGetRequest);
-    *ppGetRequest = NULL;
 }
 
 COSEM_APDU_GET_REQUEST_NORMAL *convert_data_to_get_request_normal(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)

@@ -6,10 +6,38 @@
 #include "../include/responseCosemApdu.h"
 #include "../../development/include/datainfo.h"
 #include "../../development/include/dlms.h"
+#include "../../development/include/gxmem.h"
+
+void free_get_response_normal(COSEM_APDU_GET_RESPONSE_NORMAL **ppCosemApduGetResponseNormal)
+{
+    if (*ppCosemApduGetResponseNormal != NULL)
+    {
+        if ((*ppCosemApduGetResponseNormal)->pResult != NULL)
+        {
+            var_clear(&(*ppCosemApduGetResponseNormal)->pResult->data);
+            free((*ppCosemApduGetResponseNormal)->pResult);
+            (*ppCosemApduGetResponseNormal)->pResult = NULL;
+        }
+        free(*ppCosemApduGetResponseNormal);
+        *ppCosemApduGetResponseNormal = NULL;
+    }
+}
 
 void free_get_response(COSEM_APDU_GET_RESPONSE **ppCosemApduGetResponse)
 {
-
+    if (*ppCosemApduGetResponse != NULL)
+    {
+        switch ((*ppCosemApduGetResponse)->dlmsGetCommandType)
+        {
+            case DLMS_GET_COMMAND_TYPE_NORMAL:
+                free_get_response_normal(&(*ppCosemApduGetResponse)->pCosemApduGetResponseNormal);
+                break;
+            default:
+                break;
+        }
+        free(*ppCosemApduGetResponse);
+        *ppCosemApduGetResponse = NULL;
+    }
 }
 
 COSEM_APDU_GET_RESPONSE_NORMAL *convert_data_to_get_response_normal(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)

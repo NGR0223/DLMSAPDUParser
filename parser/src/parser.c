@@ -17,6 +17,9 @@ static void free_cosem_apdu(COSEM_APDU **ppCosemApdu, DLMS_COMMAND apduType)
         case DLMS_COMMAND_GET_REQUEST:
             free_get_request(&(*ppCosemApdu)->pGetRequest);
             break;
+        case DLMS_COMMAND_GET_RESPONSE:
+            free_get_response(&(*ppCosemApdu)->pGetResponse);
+            break;
         default:
             break;
     }
@@ -27,15 +30,13 @@ static void free_cosem_apdu(COSEM_APDU **ppCosemApdu, DLMS_COMMAND apduType)
 
 void free_xDLMS_APDU(xDLMS_APDU **ppXDlmsApdu)
 {
-    if (*ppXDlmsApdu == NULL)
+    if (*ppXDlmsApdu != NULL)
     {
-        return;
+        free_cosem_apdu(&(*ppXDlmsApdu)->pCosemApdu, (*ppXDlmsApdu)->apduType);
+
+        free(*ppXDlmsApdu);
+        *ppXDlmsApdu = NULL;
     }
-
-    free_cosem_apdu(&(*ppXDlmsApdu)->pCosemApdu, (*ppXDlmsApdu)->apduType);
-
-    free(*ppXDlmsApdu);
-    *ppXDlmsApdu = NULL;
 }
 
 xDLMS_APDU *convert_data_to_xDLMS_APDU(unsigned char *data, int32_t lengthData, int32_t *pErrorCode)
@@ -53,18 +54,6 @@ xDLMS_APDU *convert_data_to_xDLMS_APDU(unsigned char *data, int32_t lengthData, 
     gxByteBuffer byteBuffer;
     bb_init(&byteBuffer);
     bb_attach(&byteBuffer, data, lengthData, 2 * lengthData);
-
-//    // Version
-//    uint16_t version = 0;
-//    int ret = bb_getUInt16(&byteBuffer, &version);
-//
-//    // Source address
-//    uint16_t sourceAddress = 0;
-//    ret = bb_getUInt16(&byteBuffer, &sourceAddress);
-//
-//    // Target address
-//    uint16_t targetAddress = 0;
-//    ret = bb_getUInt16(&byteBuffer, &targetAddress);
 
     xDLMS_APDU *xDlmsApdu = (xDLMS_APDU *) calloc(1, sizeof(xDLMS_APDU));
     // APDU length
@@ -119,6 +108,7 @@ xDLMS_APDU *convert_data_to_xDLMS_APDU(unsigned char *data, int32_t lengthData, 
             break;
         }
     }
+    bb_clear(&byteBuffer);
     return xDlmsApdu;
 }
 
