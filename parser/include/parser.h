@@ -13,6 +13,7 @@ typedef union
     COSEM_APDU_GET_REQUEST *pGetRequest;
     COSEM_APDU_SET_REQUEST *pSetRequest;
     COSEM_APDU_GET_RESPONSE *pGetResponse;
+    COSEM_APDU_EXCEPTION_RESPONSE *pExceptionResponse;
 } COSEM_APDU;
 
 typedef struct
@@ -21,6 +22,12 @@ typedef struct
     DLMS_COMMAND apduType;
     COSEM_APDU *pCosemApdu;
 } xDLMS_APDU;
+
+typedef struct
+{
+    uint32_t stateCount;
+    uint32_t states[];
+} STATES;
 
 /*!
  * Free memory

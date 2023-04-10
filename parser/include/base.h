@@ -23,6 +23,7 @@ typedef struct
     unsigned char *pValue;
     int32_t lengthValue;
 } OCTET_STRING;
+
 typedef struct
 {
     CosemClassID classID;
@@ -80,5 +81,25 @@ typedef enum
     MUTATE_POSITION_GET_ATTRIBUTE_INSTANCE_ID = 2,
     MUTATE_POSITION_GET_ATTRIBUTE_ATTRIBUTE_ID = 3,
 } MUTATE_POSITION;
+
+typedef enum
+{
+    STATE_ERROR_SERVICE_NOT_ALLOWED = 1,
+    STATE_ERROR_SERVICE_UNKNOWN = 2,
+} STATE_ERROR;
+
+typedef struct
+{
+    uint8_t SERVICE_ERROR_TAG;
+    union
+    {
+        uint8_t SERVICE_ERROR_OPERATION_NOT_POSSIBLE;
+        uint8_t SERVICE_ERROR_SERVICE_NOT_SUPPORTED;
+        uint8_t SERVICE_ERROR_OTHER_REASON;
+        uint8_t SERVICE_ERROR_PDU_TOO_LONG;
+        uint8_t SERVICE_ERROR_DECIPHERING_ERROR;
+        uint32_t SERVICE_ERROR_INVOCATION_COUNTER_ERROR;
+    };
+} SERVICE_ERROR;
 
 #endif //DLMSAPDUPARSER_BASE_H

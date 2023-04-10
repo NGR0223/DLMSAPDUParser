@@ -215,3 +215,76 @@ unsigned char *convert_get_response_to_data(COSEM_APDU_GET_RESPONSE *pCosemApduG
     bb_clear(&byteBuffer);
     return pData;
 }
+
+void free_exception_response(COSEM_APDU_EXCEPTION_RESPONSE **ppCosemApduExceptionResponse)
+{
+
+}
+
+COSEM_APDU_EXCEPTION_RESPONSE *convert_data_to_exception_response(gxByteBuffer *pByteBuffer, int32_t *pErrorCode)
+{
+    if (pByteBuffer == NULL || pByteBuffer->size == 0)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
+        return NULL;
+    }
+
+    COSEM_APDU_EXCEPTION_RESPONSE *pExceptionResponse =
+            (COSEM_APDU_EXCEPTION_RESPONSE *) calloc(1, sizeof(COSEM_APDU_EXCEPTION_RESPONSE));
+    // Get state-error identifier and state-error
+    bb_getUInt8(pByteBuffer, &pExceptionResponse->stateErrorType);
+    unsigned char ch = 0;
+    bb_getUInt8(pByteBuffer, &ch);
+    pExceptionResponse->stateError = (STATE_ERROR) ch;
+
+    // Get service-error identifier and state-error
+    bb_getUInt8(pByteBuffer, &pExceptionResponse->serviceErrorType);
+    bb_getUInt8(pByteBuffer, &(pExceptionResponse->serviceError.SERVICE_ERROR_TAG));
+    if (ch == 6)
+    {
+        uint32_t tmp = 0;
+        bb_getUInt32(pByteBuffer, &tmp);
+        pExceptionResponse->serviceError.SERVICE_ERROR_INVOCATION_COUNTER_ERROR = tmp;
+    }
+
+    return pExceptionResponse;
+}
+
+unsigned char *convert_exception_response_to_data(COSEM_APDU_EXCEPTION_RESPONSE *pCosemApduExceptionResponse,
+                                                  int32_t *pLengthData, int32_t *pErrorCode)
+{
+    if (pCosemApduExceptionResponse == NULL || pLengthData == NULL)
+    {
+        if (pErrorCode != NULL)
+        {
+            *pErrorCode = DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
+        return NULL;
+    }
+
+    gxByteBuffer byteBuffer;
+    bb_init(&byteBuffer);
+
+    // Add state-error identifier and state-error
+    bb_setUInt8(&byteBuffer, pCosemApduExceptionResponse->stateErrorType);
+    bb_setUInt8(&byteBuffer, pCosemApduExceptionResponse->stateError);
+
+    // Add service-error identifier and service-error
+    bb_setUInt8(&byteBuffer, pCosemApduExceptionResponse->serviceErrorType);
+    bb_setUInt8(&byteBuffer, pCosemApduExceptionResponse->serviceError.SERVICE_ERROR_TAG);
+    if (pCosemApduExceptionResponse->serviceError.SERVICE_ERROR_TAG == 6)
+    {
+        bb_setUInt32(&byteBuffer, pCosemApduExceptionResponse->serviceError.SERVICE_ERROR_INVOCATION_COUNTER_ERROR);
+    }
+
+    // convert to pointer of unsigned char
+    *pLengthData = (int32_t) byteBuffer.size;
+    unsigned char *pData = (unsigned char *) calloc(*pLengthData, sizeof(unsigned char));
+    bb_get(&byteBuffer, pData, byteBuffer.size);
+
+    bb_clear(&byteBuffer);
+    return pData;
+}

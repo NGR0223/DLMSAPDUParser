@@ -7,25 +7,26 @@
 
 static void free_cosem_apdu(COSEM_APDU **ppCosemApdu, DLMS_COMMAND apduType)
 {
-    if (*ppCosemApdu == NULL)
+    if (*ppCosemApdu != NULL)
     {
-        return;
-    }
+        switch (apduType)
+        {
+            case DLMS_COMMAND_GET_REQUEST:
+                free_get_request(&(*ppCosemApdu)->pGetRequest);
+                break;
+            case DLMS_COMMAND_GET_RESPONSE:
+                free_get_response(&(*ppCosemApdu)->pGetResponse);
+                break;
+            case DLMS_COMMAND_EXCEPTION_RESPONSE:
+                free_exception_response(&(*ppCosemApdu)->pExceptionResponse);
+                break;
+            default:
+                break;
+        }
 
-    switch (apduType)
-    {
-        case DLMS_COMMAND_GET_REQUEST:
-            free_get_request(&(*ppCosemApdu)->pGetRequest);
-            break;
-        case DLMS_COMMAND_GET_RESPONSE:
-            free_get_response(&(*ppCosemApdu)->pGetResponse);
-            break;
-        default:
-            break;
+        free(*ppCosemApdu);
+        *ppCosemApdu = NULL;
     }
-
-    free(*ppCosemApdu);
-    *ppCosemApdu = NULL;
 }
 
 void free_xDLMS_APDU(xDLMS_APDU **ppXDlmsApdu)
@@ -88,15 +89,20 @@ xDLMS_APDU *convert_data_to_xDLMS_APDU(unsigned char *data, int32_t lengthData, 
     {
         case DLMS_COMMAND_GET_REQUEST:
         {
-            COSEM_APDU_GET_REQUEST *pCosemApduGetRequest = convert_data_to_get_request(&byteBuffer, NULL);
-            xDlmsApdu->pCosemApdu->pGetRequest = pCosemApduGetRequest;
+            COSEM_APDU_GET_REQUEST *pGetRequest = convert_data_to_get_request(&byteBuffer, NULL);
+            xDlmsApdu->pCosemApdu->pGetRequest = pGetRequest;
             break;
         }
         case DLMS_COMMAND_GET_RESPONSE:
         {
-            COSEM_APDU_GET_RESPONSE *pCosemApduGetResponse = convert_data_to_get_response(&byteBuffer, NULL);
-            xDlmsApdu->pCosemApdu->pGetResponse = pCosemApduGetResponse;
+            COSEM_APDU_GET_RESPONSE *pGetResponse = convert_data_to_get_response(&byteBuffer, NULL);
+            xDlmsApdu->pCosemApdu->pGetResponse = pGetResponse;
             break;
+        }
+        case DLMS_COMMAND_EXCEPTION_RESPONSE:
+        {
+            COSEM_APDU_EXCEPTION_RESPONSE *pExceptionResponse = convert_data_to_exception_response(&byteBuffer, NULL);
+            xDlmsApdu->pCosemApdu->pExceptionResponse = pExceptionResponse;
         }
         default:
         {
@@ -146,6 +152,9 @@ unsigned char *convert_xDLMS_APDU_to_data(xDLMS_APDU *pXDlmsApdu, int32_t *pLeng
             break;
         case DLMS_COMMAND_GET_RESPONSE:
             pdu = convert_get_response_to_data(pXDlmsApdu->pCosemApdu->pGetResponse, &lengthPdu, pErrorCode);
+        case DLMS_COMMAND_EXCEPTION_RESPONSE:
+            pdu = convert_exception_response_to_data(pXDlmsApdu->pCosemApdu->pExceptionResponse,
+                                                     &lengthPdu, pErrorCode);
         default:
             break;
     }
@@ -189,3 +198,4 @@ void mutate_xDLMS_APDU(xDLMS_APDU *pXDlmsApdu, MUTATE_POSITION mutatePosition, i
             break;
     }
 }
+

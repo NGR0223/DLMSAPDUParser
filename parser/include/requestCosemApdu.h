@@ -83,6 +83,5 @@ typedef struct
     COSEM_APDU_SET_REQUEST_WITH_LIST *pGetRequestWithList;
 } COSEM_APDU_SET_REQUEST;
 
-COSEM_APDU_SET_REQUEST *handle_set_request(gxByteBuffer *pByteBuffer, int32_t *pErrorCode);
 
 #endif //DLMSAPDUPARSER_REQUESTCOSEMAPDU_H

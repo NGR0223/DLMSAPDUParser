@@ -37,4 +37,19 @@ COSEM_APDU_GET_RESPONSE *convert_data_to_get_response(gxByteBuffer *pByteBuffer,
 unsigned char *convert_get_response_to_data(COSEM_APDU_GET_RESPONSE *pCosemApduGetResponse,
                                             int32_t *pLengthData, int32_t *pErrorCode);
 
+typedef struct
+{
+    uint8_t stateErrorType;
+    STATE_ERROR stateError;
+    uint8_t serviceErrorType;
+    SERVICE_ERROR serviceError;
+} COSEM_APDU_EXCEPTION_RESPONSE;
+
+void free_exception_response(COSEM_APDU_EXCEPTION_RESPONSE **ppCosemApduExceptionResponse);
+
+COSEM_APDU_EXCEPTION_RESPONSE *convert_data_to_exception_response(gxByteBuffer *pByteBuffer, int32_t *pErrorCode);
+
+unsigned char *convert_exception_response_to_data(COSEM_APDU_EXCEPTION_RESPONSE *pCosemApduExceptionResponse,
+                                                  int32_t *pLengthData, int32_t *pErrorCode);
+
 #endif //DLMSAPDUPARSER_RESPONSECOSEMAPDU_H
